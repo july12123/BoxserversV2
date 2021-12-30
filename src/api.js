@@ -18,24 +18,25 @@ var portlist = [
 ]
 Update()
 module.exports = (global) => {
+    //adds Status to each portlist
     portlist.forEach(Element => {
         Element.Status = "Unknown"
     });
-
+    //default api path
     const api = `/api` 
-
+    //sends api version
     global.app.get('/api',(req, res)=>{
         res.send("Api Version 1.0.0")
     })
-
+    //404 page for Legouniverse
     global.app.get('/404',(req, res)=>{
         res.status(404).send("404")
     })
-
+    //redirects to activate page for lego universe
     global.app.get('/activate', (req,res) => {
         res.redirect("http://boxserver.freeddns.org:5000/activate");
     })
-
+    //sends computer ram, cpu and ports
     global.app.get(api+'/status',(req,res)=>{
         var Status = ""
         var total=0;
@@ -51,9 +52,10 @@ module.exports = (global) => {
         var Export = JSON.parse(`{"LastUpdated":${time},"ServerTime":${Date.now()},"CPU":${Math.round(total)},"Ram":{"total":${parseFloat(stats1.ram.total)},"used":"${parseFloat(stats1.ram.total)-parseFloat(stats1.ram.free)}","unit":"${stats1.ram.unit}"},"Data":[${Status}]}`)
         res.json(Export)
     })
+    //runs the update function every min
     var loop = setInterval(Update,60000)
 }
-
+//gets computer information
 function Update(){
   time = Date.now()
   stats().then((statistics) => {
