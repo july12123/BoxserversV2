@@ -7,12 +7,15 @@ const fs = require('fs');
 const [PHttp,PHttps] = [80,443];
 
 //get certs
+var options;
 try{
-const options = {
+options = {
   key: fs.readFileSync(__dirname+'/src/Keys/key.pem'),
   cert: fs.readFileSync(__dirname+'/src/Keys/cert.pem')
 };
-}catch{}
+}catch(err){
+  console.error("Invalid or Missing Key and Cert")
+}
 
 //run server on ports defined on Phttp and Phttps
 try{http.createServer(app).listen(PHttp)}catch{
