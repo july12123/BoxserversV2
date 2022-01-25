@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <head>
   <script src="/public/js/jquery.min.js"></script>
-  <script src="/public/js/JsLoader.js"></script>
-    <import id="header"></import>
+  <%- include('../partials/header'); %>
 </head>
 
-<navbar id="NAV"></navbar>
+<navbar>
+  <%- include('../partials/nav'); %>
+</navbar>
 
 <body>
   <div class="container">
@@ -19,4 +20,5 @@
   </div>  
 </body>
 
-<js id="js"></js>
+
+<%- include('../partials/js'); %>

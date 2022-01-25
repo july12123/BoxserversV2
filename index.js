@@ -4,18 +4,24 @@ const https = require('https');
 const http = require('http');
 const app = express();
 const fs = require('fs');
-const [Phttp,pHttps] = [80,443];
+const [PHttp,PHttps] = [80,443];
 
 //get certs
+try{
 const options = {
   key: fs.readFileSync(__dirname+'/src/Keys/key.pem'),
   cert: fs.readFileSync(__dirname+'/src/Keys/cert.pem')
 };
+}catch{}
 
 //run server on ports defined on Phttp and Phttps
-http.createServer(app).listen(Phttp)
-https.createServer(options, app).listen(pHttps)
-console.log(`Server running on Http:${Phttp}, Https:${pHttps}`)
+try{http.createServer(app).listen(PHttp)}catch{
+  console.error(`HTTP Failed to start on port: ${PHttp}`)
+}
+try{https.createServer(options, app).listen(PHttps)}catch{
+  console.error(`HTTPs Failed to start on port: ${PHttps}`)
+}
+console.log(`Server Started`)
 
 //starts the server
 app.listen = function () {
