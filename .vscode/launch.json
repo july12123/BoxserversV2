@@ -7,12 +7,23 @@
         {
             "type": "pwa-node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Script",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "outputCapture": "std",
-            "program": "${workspaceFolder}\\index.js"
+            "program": "${workspaceFolder}\\Script\\index.js"
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Web",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "cwd": "${workspaceFolder}\\web",
+            "outputCapture": "std",
+            "program": "${workspaceFolder}\\Web\\index.js"
         }
     ]
 }

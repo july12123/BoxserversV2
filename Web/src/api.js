@@ -1,20 +1,13 @@
 var stats = require('pc-stats')
-const path = require('path');
-const express = require('express')
-const fs = require('fs')
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const detect = require('detect-port');
+const {script,url} = require("../config.json")
 var time = ""
 var stats1 = ""
 var portlist = [
-    {"Name":"Web","Port":80},
-    {"Name":"Secure Web","Port":443},
-    {"Name":"LU Client DB","Port":5000},
-    {"Name":"Terraria","Port":7777},
-    {"Name":"VAC","Port":26900},
-    {"Name":"SVEN","Port":27015},
-    {"Name":"Minecraft","Port":25565},
-    {"Name":"Unturned","Port":27016},
-    {"Name":"Cam System","Port":8090}
+  {"Name":"Terraria","Port":7777},
+  {"Name":"Minecraft","Port":25565},
+  {"Name":"Cam System","Port":8090}
 ]
 Update()
 module.exports = (global) => {
@@ -49,30 +42,39 @@ module.exports = (global) => {
         };
       
         Status = Status + `{"Name":"${e.Name}","Port":${e.Port},"Status":"${e.Status}"}`});
-        var Export = JSON.parse(`{"LastUpdated":${time},"ServerTime":${Date.now()},"CPU":${Math.round(total)},"Ram":{"total":${parseFloat(stats1.ram.total)},"used":"${parseFloat(stats1.ram.total)-parseFloat(stats1.ram.free)}","unit":"${stats1.ram.unit}"},"Data":[${Status}]}`)
+        var Export = JSON.parse(`{"CPU":${Math.round(total)},"Ram":{"total":${parseFloat(stats1.ram.total)},"used":"${parseFloat(stats1.ram.total)-parseFloat(stats1.ram.free)}","unit":"${stats1.ram.unit}"},"Data":[${Status}]}`)
         res.json(Export)
     })
     //runs the update function every min
     var loop = setInterval(Update,60000)
 }
 //gets computer information
-function Update(){
-  time = Date.now()
-  stats().then((statistics) => {
-    stats1 = statistics
-  }).catch((err) => {
-    console.log(err)
-  })
-  portlist.forEach(data =>detect(data.Port, (err, _port) => {
-    if (err) {
-      console.log(err);
+async function Update(){
+  if(script == true){
+    try{
+    var response = await fetch(url)
+    var InD = await response.json() 
+    stats1 = InD.stats[0]
+    portlist = InD.portlist
+    }catch(err){
+      console.error(err)
     }
-   
-    if (data.Port == _port) {
-      data.Status = "Down"
-    } else {
-      data.Status = "Up"
-    }
-  })
-  );
+    return
+  }
+    stats().then((statistics) => {
+      stats1 = statistics
+    }).catch((err) => {
+      console.log(err)
+    })
+    portlist.forEach(data =>detect(data.Port, (err, _port) => {
+      if (err) {
+        console.log(err);
+      }
+      
+      if (data.Port == _port) {
+        data.Status = "Down"
+      } else {
+        data.Status = "Up"
+      }
+    }));
 }
