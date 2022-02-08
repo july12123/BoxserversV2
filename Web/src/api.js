@@ -1,8 +1,7 @@
 var stats = require('pc-stats')
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = require('cross-fetch');
 const detect = require('detect-port');
 const {script,url} = require("../config.json")
-var time = ""
 var stats1 = ""
 var portlist = [
   {"Name":"Terraria","Port":7777},
@@ -52,10 +51,13 @@ module.exports = (global) => {
 async function Update(){
   if(script == true){
     try{
-    var response = await fetch(url)
-    var InD = await response.json() 
-    stats1 = InD.stats[0]
-    portlist = InD.portlist
+      var response = await fetch(url)
+      if (response.status >= 400) {
+        throw new Error("Bad response from server");
+      }
+      var dat = await response.json();
+      stats1 = dat.stats[0]
+      portlist = dat.portlist
     }catch(err){
       console.error(err)
     }

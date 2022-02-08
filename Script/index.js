@@ -1,5 +1,8 @@
 var stats = require('pc-stats')
 const detect = require('detect-port');
+const express = require('express')
+const app = express()
+const port = 8080
 var time = ""
 var stats1 = ""
 var portlist = [
@@ -11,19 +14,14 @@ portlist.forEach(Element => {
     Element.Status = "Unknown"
 });
 
-const http = require('http');
-const port = 8080;
+app.get('/', (req, res) => {
+    res.json({"stats":[stats1],"portlist":portlist})
+  })
+  
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  })
 
-
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({"stats":[stats1],"portlist":portlist}));
-});
-
-server.listen(port, () => {
-  console.log(`Server running at ${port}`);
-});
 var loop = setInterval(Update,60000)
 Update()
 function Update(){
